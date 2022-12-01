@@ -1,0 +1,12 @@
+.vscode/
+*.pyc
+__pycache__
+debug/
+.DS_Store
+*.png
+output/
+outputs/
+wandb/
+*DS_Store*
+weights/
+
