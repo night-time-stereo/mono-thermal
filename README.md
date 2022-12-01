@@ -9,7 +9,7 @@ For any questions, please contact Vanshaj Chowdhary (vanshajc@andrew.cmu.edu) or
 
 ## Overview
 
-This repository builds off monodepth2 [TODO: citation] and extends it to support thermal-based depth estimation. Firstly, we leverage the self-supervised approach in monodepth2 where we predict depth and pose from multiple input thermal images, then apply a reprojection loss across all input views. In the case of thermal, we notice this is insufficient supervision and doesn't lead to good results due to the lack of features / low-resolution nature of thermal images. Therefore, we provide additional supervision in the form of pseudo-ground truth signal from a near infrared stereo pair.
+This repository builds off [Monodepth2](https://github.com/nianticlabs/monodepth2) and extends it to support thermal-based depth estimation. Firstly, we leverage the self-supervised approach in monodepth2 where we predict depth and pose from multiple input thermal images, then apply a reprojection loss across all input views. In the case of thermal, we notice this is insufficient supervision and doesn't lead to good results due to the lack of features / low-resolution nature of thermal images. Therefore, we provide additional supervision in the form of pseudo-ground truth signal from a near infrared stereo pair.
 
 
 ## Requirements
@@ -59,6 +59,7 @@ Example command: `python3 inference.py -i sample/thermal1.npy -w weights/pretrai
 
 ### Pre-Trained Models
 
+A sample thermal model can be downloaded [here](https://drive.google.com/file/d/1GQTdDTH_Fa_XKJG7XBcqj4Swn9sIDL2T/view?usp=sharing). Note, this model was trained on Cord 84 in the NREC ATR MCAS data.
 
 
 ## Training
