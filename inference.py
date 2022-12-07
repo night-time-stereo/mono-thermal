@@ -70,7 +70,8 @@ if __name__ == "__main__":
     model.eval()
 
     times = []
-    pbar = tqdm.tqdm(inputs)
+    pbar = tqdm.tqdm(sorted(inputs))
+    frame_num = 0
     for inp in pbar:
         pbar.set_description(f"Processing {inp}. Avg Inference Time {np.average(times).round(5)}s")
         fname = inp.split('/')[-1].replace('.npy', '')
@@ -93,30 +94,25 @@ if __name__ == "__main__":
 
         sensor = "rgb" if args.num_channels == 3 else "thermal"
 
+        plt.axis('off')
+        plt.imshow(data.cpu().detach()[0], cmap='Greys')
+        plt.savefig(f'{args.output_dir}/inputs/input_{frame_num:06d}.png', bbox_inches='tight')
+        plt.close()
+
+        plt.axis('off')
+        plt.imshow(disp, cmap='inferno', vmin=0, vmax=disp.max())
+        plt.savefig(f'{args.output_dir}/preds/pred_{frame_num:06d}.png', bbox_inches='tight')
+        plt.close()
+
         if args.load_gt:
             gt = np.load(args.input[:-(len(sensor) + 4)] + 'gt.npy')
             gt = skimage.transform.resize(gt, (384,512), mode='constant')
-
-        if args.load_gt:
-            plt.subplots(1, 4, figsize=(10,5))
-            plt.subplot(1, 4, 1, title="Input Image")
-            plt.imshow(data.cpu().detach()[0], cmap='Greys')
-            plt.subplot(1, 4, 2, title="Predicted Disparity")
-            plt.imshow(disp, cmap='inferno', vmin=0, vmax=gt.max())
-            plt.subplot(1, 4, 3, title="Entropy")
-            plt.imshow(entropy[0,0], cmap='inferno', vmin=0, vmax=entropy.max())
-            plt.subplot(1, 4, 4, title="Ground Truth")
+            plt.axis('off')
             plt.imshow(gt, cmap='inferno', vmin=0, vmax=gt.max())
+            plt.savefig(f'{args.output_dir}/gt/gt_{frame_num:06d}.png', bbox_inches='tight')
+            plt.close()
 
-        else:
-            plt.subplots(1, 2, figsize=(10,5))
-            plt.subplot(1, 2, 1, title="Input Image")
-            plt.imshow(data.cpu().detach()[0], cmap='Greys')
-            plt.subplot(1, 2, 2, title="Predicted Disparity")
-            plt.imshow(disp, cmap='inferno', vmin=0, vmax=disp.max())
-            
-        plt.savefig(f'{args.output_dir}/pred_{fname}.png')
-        plt.close()
+        frame_num += 1
 
         # Only visualize point cloud when 1 input is given to save time.
         # Recommend to first run with the entire data, then choose specific samples to inspect point cloud.
@@ -136,9 +132,3 @@ if __name__ == "__main__":
             fig.update_traces(marker={'size': 1})
             fig.write_html(f"{args.output_dir}/point_cloud_{fname}.html")
             print(f"Point cloud saved as {args.output_dir}/point_cloud_{fname}.html")
-
-
-
-
-
-
